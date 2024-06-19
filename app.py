@@ -3,6 +3,8 @@ import psutil
 import GPUtil
 import platform
 import os
+import pandas as pd
+import time
 
 # Function to get CPU information
 def get_cpu_info():
@@ -44,8 +46,15 @@ def get_gpu_info():
         gpu_info.append(info)
     return gpu_info
 
+# Function to get process information
+def get_process_info():
+    process_info = []
+    for proc in psutil.process_iter(['pid', 'name', 'username', 'cpu_percent', 'memory_percent']):
+        process_info.append(proc.info)
+    return process_info
+
 # Streamlit app
-st.title("System Information")
+st.title("System Information and Activity Tracker")
 
 # CPU Information
 st.header("CPU Information")
@@ -66,3 +75,19 @@ if gpu_info:
         st.table(gpu.items())
 else:
     st.write("No GPU found")
+
+# Process Information
+st.header("Process Information")
+refresh_rate = st.sidebar.slider('Refresh Rate (seconds)', min_value=1, max_value=60, value=5)
+
+process_placeholder = st.empty()
+
+# Function to display process information
+def display_process_info():
+    process_info = get_process_info()
+    df = pd.DataFrame(process_info)
+    process_placeholder.table(df)
+
+while True:
+    display_process_info()
+    time.sleep(refresh_rate)
