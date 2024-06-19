@@ -1,12 +1,15 @@
 import streamlit as st
 import psutil
 import GPUtil
+import platform
+import os
 
 # Function to get CPU information
 def get_cpu_info():
     cpu_info = {
+        "CPU Name": platform.processor() if platform.system() == "Windows" else os.popen("cat /proc/cpuinfo | grep 'model name' | uniq").read().strip().split(": ")[1],
         "Physical cores": psutil.cpu_count(logical=False),
-        "Total cores": psutil.cpu_count(logical=True),
+        "Total threads": psutil.cpu_count(logical=True),
         "Max Frequency": f"{psutil.cpu_freq().max:.2f}Mhz",
         "Min Frequency": f"{psutil.cpu_freq().min:.2f}Mhz",
         "Current Frequency": f"{psutil.cpu_freq().current:.2f}Mhz",
