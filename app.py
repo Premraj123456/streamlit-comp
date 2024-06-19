@@ -1,7 +1,6 @@
 import streamlit as st
 import psutil
 import GPUtil
-from tabulate import tabulate
 
 # Function to get CPU information
 def get_cpu_info():
@@ -48,12 +47,12 @@ st.title("System Information")
 # CPU Information
 st.header("CPU Information")
 cpu_info = get_cpu_info()
-st.table(cpu_info)
+st.table(cpu_info.items())
 
 # RAM Information
 st.header("RAM Information")
 ram_info = get_ram_info()
-st.table(ram_info)
+st.table(ram_info.items())
 
 # GPU Information
 st.header("GPU Information")
@@ -61,7 +60,6 @@ gpu_info = get_gpu_info()
 if gpu_info:
     for idx, gpu in enumerate(gpu_info):
         st.subheader(f"GPU {idx + 1}")
-        st.table(gpu)
+        st.table(gpu.items())
 else:
     st.write("No GPU found")
-
